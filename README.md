@@ -1,2 +1,2 @@
-# EUNO eWallet
+# EUNO Payout application for masternodes
 

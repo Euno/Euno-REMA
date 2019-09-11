@@ -1,17 +1,59 @@
 <template>
     <div id="settings">
 
-        <h3>Settings</h3>
+        <Toolbar
+                @on-close="closeWindow()"
+                title="Settings"
+                :show-close="true"
+        >
+        </Toolbar>
 
-        <input type="text" name="host" v-model="form.host" placeholder="Host" />
-        <input type="text" name="port" v-model="form.port" placeholder="Port" />
-        <input type="text" name="username" v-model="form.rpcUser" placeholder="RPC username" />
-        <input type="password" name="password" v-model="form.rpcPassword" placeholder="RPC password" />
+        <div class="windowContent">
+            <el-form ref="form" :model="form" label-position="top">
 
-        <input type="text" name="payout_address" v-model="form.payoutAddress" placeholder="EUNO payout address" />
+                <el-row>
+                    <el-col :span="14">
+                        <el-form-item label="Host">
+                            <el-input placeholder="Host" v-model="form.host" size="mini"></el-input>
+                        </el-form-item>
+                    </el-col>
 
-        <button @click="saveSettings()">Save</button>
-        <button @click="testSettings()">Test connection</button>
+                    <el-col :span="8">
+                        <el-form-item label="Port">
+                            <el-input placeholder="Port" v-model="form.port" size="mini"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="RPC username">
+                            <el-input placeholder="RPC username" v-model="form.rpcUser" size="mini"></el-input>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="11">
+                        <el-form-item label="RPC password">
+                            <el-input placeholder="RPC password" v-model="form.rpcPassword" size="mini" type="password"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="22">
+                        <el-form-item label="EUNO payout address">
+                            <el-input placeholder="RPC username" v-model="form.payoutAddress" size="mini"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+            </el-form>
+
+            <el-button @click="saveSettings()" size="mini" type="primary">Save</el-button>
+            <el-button @click="testSettings()" size="mini" type="info">Test connection</el-button>
+        </div>
+
+
 
     </div>
 </template>
@@ -21,9 +63,11 @@
     import log from 'electron-log'
     import storage from 'electron-json-storage';
     import RpcClient from 'bitcoind-rpc-client'
+    import Toolbar from "../components/Toolbar";
 
     export default {
         name: 'Settings',
+        components: {Toolbar},
         data(){
             return {
                 form: {
@@ -92,6 +136,9 @@
                 {
                     alert('Credentials invalid');
                 }
+            },
+            closeWindow(){
+                ipcRenderer.send('closeSettingsWindow', true);
             }
         }
     }
@@ -99,6 +146,23 @@
 
 <style lang="scss">
     #settings{
+        background-color:  #EBF1FF;
+        height: 100%;
+        width: 100%;
 
+        .windowContent{
+            margin: 20px;
+            height: 100%;
+            width: 100%;
+
+            .el-form-item__label{
+                padding: 0;
+                margin-bottom: -15px;
+            }
+
+            .el-form-item{
+                margin-bottom: 0;
+            }
+        }
     }
 </style>

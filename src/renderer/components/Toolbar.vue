@@ -2,12 +2,12 @@
     <div id="toolbar">
 
         <div class="title">
-            EUNO• Payout
+            {{title}}
         </div>
-        <div class="minify">
+        <div class="minify" v-if="showMinify === true">
             <button @click="minify()">-</button>
         </div>
-        <div class="close">
+        <div class="close" v-if="showClose === true">
             <button @click="close()">X</button>
         </div>
 
@@ -17,6 +17,7 @@
 <script>
     export default {
         name: "Toolbar",
+        props: ['title', 'showMinify', 'showClose'],
         methods: {
             minify(){
                 this.$emit('on-minify');
@@ -52,7 +53,7 @@
 
             button{
                 display: block;
-                background-color: #ffbd2c;
+                background-color: #7599F2;
                 color: #FFF;
                 border: none;
                 height: 25px;
@@ -66,7 +67,7 @@
 
             button{
                 display: block;
-                background-color: #bf1c1a;
+                background-color: #562CDD;
                 color: #FFF;
                 border: none;
                 height: 25px;

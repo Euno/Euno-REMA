@@ -1,16 +1,22 @@
 <template>
     <div id="start">
-        <Toolbar @on-minify="minifyWindow()" @on-close="closeWindow()"></Toolbar>
+        <Toolbar
+            @on-minify="minifyWindow()"
+            @on-close="closeWindow()"
+            title="EUNO• Payout"
+            :show-minify="true"
+            :show-close="true"
+        >
+        </Toolbar>
 
         <div class="windowContent">
-            <h3>EUNO• payout program is running</h3>
-
             <div>
-                <input type="checkbox" v-model="localSettings.enablePayout"> Enable payouts
+                <el-checkbox v-model="localSettings.enablePayout">Enable payouts</el-checkbox>
             </div>
 
-            <button @click="openSettings()">Open settings</button>
-            <button @click="fetchUnspents()">Fetch unspents</button>
+            <el-button class="settings-btn" type="primary" size="mini" @click="openSettings()">Open settings</el-button>
+
+            <Version></Version>
         </div>
     </div>
 </template>
@@ -23,10 +29,11 @@
     import _ from 'underscore';
     import constants from "../constants";
     import Toolbar from "../components/Toolbar";
+    import Version from "../components/Version";
 
     export default {
         name: 'Start',
-        components: {Toolbar},
+        components: {Toolbar, Version},
         data(){
             return {
                 localSettings: {
@@ -36,6 +43,10 @@
         },
         mounted(){
             this.fetchUnspents();
+
+            setInterval(()=>{
+                this.fetchUnspents();
+            }, 3600000);
         },
         methods: {
             openSettings(){
@@ -199,8 +210,18 @@
 
 <style lang="scss">
     #start{
+        background-color:  #EBF1FF;
+        height: 100%;
+        width: 100%;
+
         .windowContent{
             margin: 20px;
+            height: 100%;
+            width: 100%;
+
+            .settings-btn{
+                margin-top: 20px;
+            }
         }
     }
 </style>

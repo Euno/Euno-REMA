@@ -75,13 +75,13 @@ function loadSettingsWindow() {
     }
 
     settingsWindow = new BrowserWindow({
-        width: 300,
-        height: 150,
+        width: 440,
+        height: 290,
         title: 'EUNO Masternode Payout Settings',
         resizable: false,
         fullscreenable: false,
         show: true,
-        frame: true,
+        frame: false,
         webPreferences: {
             nodeIntegration: true
         }
@@ -115,6 +115,11 @@ ipcMain.on('minifyMainWindow', ()=>{
 ipcMain.on('closeMainWindow', ()=>{
     mainWindow.close();
     mainWindow = false;
+});
+
+ipcMain.on('closeSettingsWindow', ()=>{
+    settingsWindow.close();
+    settingsWindow = false;
 });
 
 app.on('window-all-closed', () => {
