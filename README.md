@@ -1,2 +1,2 @@
-# EunoPayout
-EunoPayout
+# EUNO eWallet
+

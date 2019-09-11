@@ -1,0 +1,32 @@
+{
+  "name": "euno-payout",
+  "version": "0.0.1",
+  "description": "EUNO payout tool based on ElectrumJS, written in VueJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron-webpack dev",
+    "build": "electron-webpack && electron-builder"
+  },
+  "author": "@arrie1992",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.8",
+    "electron-builder": "^20.38.4",
+    "electron-webpack": "^2.6.1",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "vue": "^2.5.21",
+    "vue-loader": "^15.5.1",
+    "vue-template-compiler": "^2.5.21",
+    "webpack": "^4.28.4"
+  },
+  "dependencies": {
+    "@sentry/electron": "^0.17.1",
+    "bitcoind-rpc-client": "^0.3.1",
+    "electron-json-storage": "^4.1.7",
+    "electron-log": "^3.0.1",
+    "source-map-support": "^0.5.9",
+    "underscore": "^1.9.1",
+    "vue-router": "^3.0.2"
+  }
+}
