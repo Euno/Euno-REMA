@@ -22,5 +22,6 @@
         bottom: 20px;
         left: 20px;
         font-size: 12px;
+        font-weight: 200;
     }
 </style>

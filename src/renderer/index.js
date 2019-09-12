@@ -6,6 +6,7 @@ Vue.use(VueRouter);
 
 import ElementUI from 'element-ui'
 import '@/assets/element-ui/index.css';
+import '@/assets/fonts.scss';
 import router from './router'
 
 Vue.use(ElementUI);

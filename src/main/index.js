@@ -1,17 +1,17 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
-import path from 'path'
-import { format as formatUrl } from 'url'
-//import * as Sentry from '@sentry/electron';
+//import path from 'path'
+//import { format as formatUrl } from 'url'
+import * as Sentry from '@sentry/electron';
 
 import storage from 'electron-json-storage';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-/*Sentry.init({
-    dsn: envConfig.sentry.dsn,
+Sentry.init({
+    dsn: "https://da525356c1d2433da5bc1e2d753289df@sentry.io/1725936",
     environment: process.env.NODE_ENV,
-    release: envConfig.version
-});*/
+    release: "0.0.1-alpha"
+});
 
 app.on('ready', () => {
     checkWindow();
@@ -32,8 +32,8 @@ function checkWindow(){
     });
 }
 
-let mainWindow;
-let settingsWindow;
+let mainWindow = false;
+let settingsWindow = false;
 
 function loadMainWindow() {
 
@@ -49,7 +49,7 @@ function loadMainWindow() {
         title: 'EUNO Masternode Payout',
         resizable: false,
         fullscreenable: false,
-        show: true,
+        show: false,
         frame: false,
         webPreferences: {
             nodeIntegration: true
@@ -59,12 +59,12 @@ function loadMainWindow() {
     if(isDevelopment) {
         mainWindow.loadURL(`http:localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`)
     } else {
-        mainWindow.loadURL(formatUrl({
-            pathname: path.join(__dirname, 'index.html'),
-            protocol: 'file',
-            slashes: true
-        }));
+        mainWindow.loadURL(`file://${__dirname}/index.html`)
     }
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+    });
 }
 
 function loadSettingsWindow() {
@@ -80,7 +80,7 @@ function loadSettingsWindow() {
         title: 'EUNO Masternode Payout Settings',
         resizable: false,
         fullscreenable: false,
-        show: true,
+        show: false,
         frame: false,
         webPreferences: {
             nodeIntegration: true
@@ -90,12 +90,12 @@ function loadSettingsWindow() {
     if(isDevelopment) {
         settingsWindow.loadURL(`http:localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}#settings`)
     } else {
-        settingsWindow.loadURL(formatUrl({
-            pathname: path.join(__dirname, 'index.html'),
-            protocol: 'file',
-            slashes: true
-        }));
+        settingsWindow.loadURL(`file://${__dirname}/index.html#settings`)
     }
+
+    settingsWindow.once('ready-to-show', () => {
+        settingsWindow.show();
+    })
 }
 
 ipcMain.on('checkSettingsFilled', ()=>{
@@ -118,8 +118,12 @@ ipcMain.on('closeMainWindow', ()=>{
 });
 
 ipcMain.on('closeSettingsWindow', ()=>{
-    settingsWindow.close();
-    settingsWindow = false;
+    loadMainWindow();
+
+    setTimeout(()=> {
+        settingsWindow.close();
+        settingsWindow = false;
+    }, 300);
 });
 
 app.on('window-all-closed', () => {

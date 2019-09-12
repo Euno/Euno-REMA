@@ -50,7 +50,7 @@
             </el-form>
 
             <el-button @click="saveSettings()" size="mini" type="primary">Save</el-button>
-            <el-button @click="testSettings()" size="mini" type="info">Test connection</el-button>
+            <el-button @click="testSettings()" size="mini" type="info" :loading="testLoading">Test connection</el-button>
         </div>
 
 
@@ -76,7 +76,8 @@
                     rpcUser: 'user',
                     rpcPassword: '1234',
                     payoutAddress: ''
-                }
+                },
+                testLoading: false
             }
         },
         mounted(){
@@ -115,6 +116,8 @@
                 });
             },
             async testSettings() {
+                this.testLoading = true;
+
                 const client = new RpcClient({
                     host: this.form.host,
                     port: this.form.port
@@ -129,6 +132,8 @@
                 } catch (error) {
                     result = error;
                 }
+
+                this.testLoading = false;
 
                 if (typeof result.result !== 'undefined') {
                     alert('ok');
