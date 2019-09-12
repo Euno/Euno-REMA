@@ -14,7 +14,10 @@
                 <el-checkbox v-model="localSettings.enablePayout">Enable payouts</el-checkbox>
             </div>
 
-            <el-button class="settings-btn" type="primary" size="mini" @click="openSettings()">Open settings</el-button>
+            <el-button class="settings-btn" type="primary" size="mini" @click="fetchUnspents()" :disabled="!localSettings.enablePayout">Payout now</el-button>
+            <el-button class="settings-btn" type="info" size="mini" @click="openSettings()">Open settings</el-button>
+
+            <p class="info">A payout request will be executed every hour. If you want to do a manual payout, please click the "Payout now" button!</p>
 
             <Version></Version>
         </div>
@@ -221,6 +224,11 @@
 
             .settings-btn{
                 margin-top: 20px;
+            }
+
+            .info{
+                font-size: 14px;
+                padding-right: 10px;
             }
         }
     }
