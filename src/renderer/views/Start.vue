@@ -66,12 +66,41 @@
                         storage.get('eunoPayoutSettings', async function(error, data) {
                             if (error) throw error;
 
+                            if(self.localSettings.enablePayout === false)
+                                return true;
+
+                            if(!data.payoutAddress)
+                            {
+                                new Notification('No payout address provided', {
+                                    body: 'Please go to settings and fill in your payout address!'
+                                });
+                                return true;
+                            }
+
                             const client = new RpcClient({
                                 host: data.host,
                                 port: data.port
                             });
                             client.set('user', data.rpcUser);
                             client.set('pass', data.rpcPassword);
+
+                            if(data.walletPassphrase)
+                            {
+                                let unlock = false;
+                                try {
+                                    unlock = await client.cmd('walletpassphrase', data.walletPassphrase, 1000, false);
+                                } catch (error) {
+                                    unlock = error;
+                                    new Notification('EunoPayout Error Occurred', {
+                                        body: error
+                                    });
+                                }
+
+                                if(typeof unlock.result !== 'undefined')
+                                {
+                                    return false;
+                                }
+                            }
 
                             let result = false;
 
@@ -86,11 +115,6 @@
                                 let rewards = _.filter(result.result, (unspent)=>{
                                     return parseInt(parseFloat(unspent.amount).toFixed(0)) === 30
                                 });
-
-                                console.log(rewards);
-
-                                if(self.localSettings.enablePayout === false)
-                                    return true;
 
                                 let sortedTxPerAddress = {};
                                 _.each(rewards, (r)=>{
@@ -118,14 +142,6 @@
 
                                         totalCoins -= constants.feeAmount;
                                     });
-
-                                    if(!data.payoutAddress)
-                                    {
-                                        new Notification('No payout address provided', {
-                                            body: 'Please go to settings and fill in your payout address!'
-                                        });
-                                        return true;
-                                    }
 
                                     let toAddress = {};
                                     toAddress[data.payoutAddress] = totalCoins;
@@ -194,6 +210,19 @@
                                         new Notification('EunoPayout Error Occurred', {
                                             body: rawTx
                                         });
+                                    }
+
+                                    if(data.walletPassphrase)
+                                    {
+                                        try {
+                                            await client.cmd('walletlock');
+                                        } catch (error) {
+                                        }
+
+                                        try {
+                                            await client.cmd('walletpassphrase', data.walletPassphrase, 1000, true);
+                                        } catch (error) {
+                                        }
                                     }
                                 }
                             }

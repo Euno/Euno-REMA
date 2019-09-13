@@ -47,13 +47,19 @@
                     </el-col>
                 </el-row>
 
+                <el-row>
+                    <el-col :span="22">
+                        <el-form-item label="Wallet password">
+                            <el-input placeholder="Wallet password" v-model="form.walletPassphrase" size="mini" type="password"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
             </el-form>
 
             <el-button @click="saveSettings()" size="mini" type="primary">Save</el-button>
             <el-button @click="testSettings()" size="mini" type="info" :loading="testLoading">Test connection</el-button>
         </div>
-
-
 
     </div>
 </template>
@@ -75,7 +81,8 @@
                     port: 21333,
                     rpcUser: 'user',
                     rpcPassword: '1234',
-                    payoutAddress: ''
+                    payoutAddress: '',
+                    walletPassphrase: ''
                 },
                 testLoading: false
             }
@@ -95,14 +102,7 @@
                         self.form.rpcUser = data.rpcUser;
                         self.form.rpcPassword = data.rpcPassword;
                         self.form.payoutAddress = data.payoutAddress;
-
-                        const client = new RpcClient({
-                            host: data.host,
-                            port: data.port
-                        });
-                        client.set('user', data.rpcUser);
-                        client.set('pass', data.rpcPassword);
-
+                        self.form.walletPassphrase = data.walletPassphrase;
                     });
                 }
             });

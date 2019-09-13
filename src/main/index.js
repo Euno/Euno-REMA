@@ -76,7 +76,7 @@ function loadSettingsWindow() {
 
     settingsWindow = new BrowserWindow({
         width: 440,
-        height: 290,
+        height: 350,
         title: 'EUNO Masternode Payout Settings',
         resizable: false,
         fullscreenable: false,
