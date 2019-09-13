@@ -29,5 +29,10 @@
     "source-map-support": "^0.5.9",
     "underscore": "^1.9.1",
     "vue-router": "^3.0.2"
+  },
+  "build": {
+    "appId": "com.euno.payoutApp",
+    "productName": "EUNO• Payout",
+    "copyright": "Copyright © year ${author}"
   }
 }
