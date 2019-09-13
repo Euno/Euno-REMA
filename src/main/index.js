@@ -123,7 +123,7 @@ ipcMain.on('closeSettingsWindow', ()=>{
     setTimeout(()=> {
         settingsWindow.close();
         settingsWindow = false;
-    }, 300);
+    }, 1000);
 });
 
 app.on('window-all-closed', () => {
