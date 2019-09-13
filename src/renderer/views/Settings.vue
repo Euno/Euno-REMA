@@ -72,7 +72,7 @@
             return {
                 form: {
                     host: '127.0.0.1', //Default settings
-                    port: 20102,
+                    port: 21333,
                     rpcUser: 'user',
                     rpcPassword: '1234',
                     payoutAddress: ''
