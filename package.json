@@ -1,13 +1,13 @@
 {
   "name": "euno-payout",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2",
   "description": "EUNO payout tool based on ElectrumJS, written in VueJS",
   "main": "index.js",
   "scripts": {
     "start": "electron-webpack dev",
     "build": "electron-webpack && electron-builder"
   },
-  "author": "@arrie1992",
+  "author": "EUNO• @arrie1992",
   "license": "ISC",
   "devDependencies": {
     "electron": "^6.0.8",
