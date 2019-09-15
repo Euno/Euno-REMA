@@ -99,9 +99,23 @@ function loadSettingsWindow() {
 }
 
 ipcMain.on('checkSettingsFilled', ()=>{
-    settingsWindow.close();
-    settingsWindow = false;
-    checkWindow();
+    storage.has('eunoPayoutSettings', function(error, hasKey) {
+        if (error) throw error;
+
+        if (hasKey)
+        {
+            loadMainWindow();
+
+            setTimeout(()=>{
+                settingsWindow.close();
+                settingsWindow = false;
+            }, 1000);
+        }
+        else
+        {
+            loadSettingsWindow();
+        }
+    });
 });
 
 ipcMain.on('openSettingsScreen', ()=>{

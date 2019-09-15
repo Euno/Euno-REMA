@@ -42,7 +42,7 @@
                 <el-row>
                     <el-col :span="22">
                         <el-form-item label="EUNO payout address">
-                            <el-input placeholder="RPC username" v-model="form.payoutAddress" size="mini"></el-input>
+                            <el-input placeholder="EUNO payout address" v-model="form.payoutAddress" size="mini"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
