@@ -14,8 +14,10 @@
                 <el-checkbox v-model="localSettings.enablePayout">Enable payouts</el-checkbox>
             </div>
 
-            <el-button class="settings-btn" type="primary" size="mini" @click="fetchUnspents()" :disabled="!localSettings.enablePayout">Payout now</el-button>
+            <el-button class="settings-btn" type="primary" size="mini" @click="fetchUnspents()" :disabled="!localSettings.enablePayout || payoutInProgress" :loading="payoutInProgress">Payout now</el-button>
             <el-button class="settings-btn" type="info" size="mini" @click="openSettings()">Open settings</el-button>
+
+            <p class="info" v-if="payoutInProgress"><em>Creating the transaction may take a while. Please wait..</em></p>
 
             <p class="info">A payout request will be executed every hour. If you want to do a manual payout, please click the "Payout now" button!</p>
 
@@ -41,7 +43,8 @@
             return {
                 localSettings: {
                     enablePayout: false
-                }
+                },
+                payoutInProgress: false
             }
         },
         mounted(){
@@ -69,6 +72,8 @@
                             if(self.localSettings.enablePayout === false)
                                 return true;
 
+                            self.payoutInProgress = true;
+
                             if(!data.payoutAddress)
                             {
                                 new Notification('No payout address provided', {
@@ -86,18 +91,19 @@
 
                             if(data.walletPassphrase)
                             {
-                                let unlock = false;
+                                let unlocked = true;
                                 try {
-                                    unlock = await client.cmd('walletpassphrase', data.walletPassphrase, 1000, false);
+                                    await client.cmd('walletpassphrase', data.walletPassphrase, 1000, false);
                                 } catch (error) {
-                                    unlock = error;
+                                    unlocked = false;
                                     new Notification('EunoPayout Error Occurred', {
                                         body: error
                                     });
                                 }
 
-                                if(typeof unlock.result !== 'undefined')
+                                if(unlocked === false)
                                 {
+                                    self.payoutInProgress = false;
                                     return false;
                                 }
                             }
@@ -226,6 +232,8 @@
                                     }
                                 }
                             }
+
+                            self.payoutInProgress = false;
                         });
                     }
                 });

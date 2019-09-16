@@ -136,10 +136,20 @@
                 this.testLoading = false;
 
                 if (typeof result.result !== 'undefined') {
-                    alert('ok');
+                    this.$message({
+                        message: 'RPC credentials are valid',
+                        type: 'success',
+                        duration: 1500,
+                        showClose: true
+                    });
                 } else
                 {
-                    alert('Credentials invalid');
+                    this.$message({
+                        message: 'Oops, the given credentials are invalid!',
+                        type: 'error',
+                        duration: 1500,
+                        showClose: true
+                    });
                 }
             },
             closeWindow(){
