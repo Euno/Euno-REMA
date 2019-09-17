@@ -17,9 +17,17 @@
             <el-button class="settings-btn" type="primary" size="mini" @click="fetchUnspents()" :disabled="!localSettings.enablePayout || payoutInProgress" :loading="payoutInProgress">Payout now</el-button>
             <el-button class="settings-btn" type="info" size="mini" @click="openSettings()">Open settings</el-button>
 
-            <p class="info" v-if="payoutInProgress"><em>Creating the transaction may take a while. Please wait..</em></p>
+            <p class="info" v-if="payoutInProgress">
+                <em>Creating the transaction may take a while. Please wait...</em>
+            </p>
 
-            <p class="info">A payout request will be executed every hour. If you want to do a manual payout, please click the "Payout now" button!</p>
+            <p class="info">
+                A payout request will be executed every hour. If you want to do a manual payout, please click the "Payout now" button!
+            </p>
+
+            <p class="info">
+                ETA next payout: {{localSettings.enablePayout === true ? nextPayoutDateHuman : 'Never, because payouts are disabled'}}
+            </p>
 
             <Version></Version>
         </div>
@@ -35,6 +43,7 @@
     import constants from "../constants";
     import Toolbar from "../components/Toolbar";
     import Version from "../components/Version";
+    import moment from "moment";
 
     export default {
         name: 'Start',
@@ -44,17 +53,32 @@
                 localSettings: {
                     enablePayout: false
                 },
-                payoutInProgress: false
+                payoutInProgress: false,
+                blockCount: 0,
+                nextPayoutDate: 0,
+                nextPayoutDateHuman: '',
             }
         },
         mounted(){
-            this.fetchUnspents();
+            this.setCountdownDate();
+
+            this.nextPayoutHuman();
+            setInterval(()=>{
+                this.nextPayoutHuman();
+            }, 2500);
 
             setInterval(()=>{
+                this.setCountdownDate();
                 this.fetchUnspents();
             }, 3600000);
         },
         methods: {
+            nextPayoutHuman(){
+                this.nextPayoutDateHuman = moment(new Date(this.nextPayoutDate)).fromNow();
+            },
+            setCountdownDate(){
+                this.nextPayoutDate = new Date().getTime() + 3600000;
+            },
             openSettings(){
                 ipcRenderer.send('openSettingsScreen', true);
             },
@@ -108,6 +132,22 @@
                                 }
                             }
 
+                            let info = false;
+
+                            try {
+                                info = await client.cmd('getinfo');
+                            } catch (error) {
+                                info = error;
+                            }
+
+                            if(typeof info.id === 'undefined')
+                            {
+                                this.closeWallet();
+                                return true;
+                            }
+
+                            self.blockCount = info.result.blocks;
+
                             let result = false;
 
                             try {
@@ -119,7 +159,7 @@
                             if(result.error === null)
                             {
                                 let rewards = _.filter(result.result, (unspent)=>{
-                                    return parseInt(parseFloat(unspent.amount).toFixed(0)) === 30
+                                    return parseInt(parseFloat(unspent.amount).toFixed(0)) === self.calcRewardAmount()
                                 });
 
                                 let sortedTxPerAddress = {};
@@ -189,6 +229,7 @@
                                                     });
 
                                                     let newTxId = sendRawTx.result;
+                                                    self.payoutInProgress = false;
                                                 }
                                                 else
                                                 {
@@ -218,25 +259,89 @@
                                         });
                                     }
 
-                                    if(data.walletPassphrase)
-                                    {
-                                        try {
-                                            await client.cmd('walletlock');
-                                        } catch (error) {
-                                        }
-
-                                        try {
-                                            await client.cmd('walletpassphrase', data.walletPassphrase, 1000, true);
-                                        } catch (error) {
-                                        }
-                                    }
+                                    self.payoutInProgress = false;
+                                    await self.closeWallet();
+                                }
+                                else
+                                {
+                                    self.payoutInProgress = false;
+                                    await self.closeWallet();
                                 }
                             }
-
-                            self.payoutInProgress = false;
                         });
                     }
                 });
+            },
+            async closeWallet(){
+                storage.has('eunoPayoutSettings', async function(error, hasKey) {
+                    if (error) throw error;
+
+                    if (hasKey) {
+                        storage.get('eunoPayoutSettings', async function (error, data) {
+                            if (error) throw error;
+
+                            const client = new RpcClient({
+                                host: data.host,
+                                port: data.port
+                            });
+                            client.set('user', data.rpcUser);
+                            client.set('pass', data.rpcPassword);
+
+                            if (data.walletPassphrase) {
+                                let lock = '';
+                                try {
+                                    lock = await client.cmd('walletlock');
+                                } catch (error) {
+                                }
+
+                                let unlockForStakingOnly = '';
+                                try {
+                                    unlockForStakingOnly = await client.cmd('walletpassphrase', data.walletPassphrase, 1000, true);
+                                } catch (error) {
+                                }
+                            }
+
+                        });
+                    }
+                });
+            },
+            calcRewardAmount(){
+                let mnReward = 0;
+
+                if(this.blockCount < 550000)
+                {
+                    mnReward = 50 * 0.6;
+                }
+                else if(this.blockCount < 915000)
+                {
+                    mnReward = 33.5 * 0.8;
+                }
+                else if(this.blockCount < 1295000)
+                {
+                    mnReward = 22.4 * 0.8;
+                }
+                else if(this.blockCount < 1675000)
+                {
+                    mnReward = 15 * 0.8;
+                }
+                else if(this.blockCount < 2055000)
+                {
+                    mnReward = 10 * 0.8;
+                }
+                else if(this.blockCount < 2435000)
+                {
+                    mnReward = 6.7 * 0.8;
+                }
+                else if(this.blockCount < 2815000)
+                {
+                    mnReward = 4.5 * 0.8;
+                }
+                else
+                {
+                    mnReward = 3 * 0.8;
+                }
+
+                return mnReward;
             },
             minifyWindow(){
                 ipcRenderer.send('minifyMainWindow', true);

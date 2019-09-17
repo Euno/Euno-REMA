@@ -13,9 +13,39 @@ Sentry.init({
     release: "0.0.1-alpha"
 });
 
-app.on('ready', () => {
-    checkWindow();
-});
+let mainWindow = false;
+let settingsWindow = false;
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock)
+{
+    app.quit()
+}
+else
+{
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if (mainWindow)
+        {
+            if (mainWindow.isMinimized())
+                mainWindow.restore();
+
+            mainWindow.focus();
+        }
+
+        if (settingsWindow)
+        {
+            if (settingsWindow.isMinimized())
+                settingsWindow.restore();
+
+            settingsWindow.focus();
+        }
+    });
+
+    app.on('ready', () => {
+        checkWindow();
+    });
+}
 
 function checkWindow(){
     storage.has('eunoPayoutSettings', function(error, hasKey) {
@@ -31,9 +61,6 @@ function checkWindow(){
         }
     });
 }
-
-let mainWindow = false;
-let settingsWindow = false;
 
 function loadMainWindow() {
 
