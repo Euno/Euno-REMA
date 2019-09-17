@@ -1,6 +1,6 @@
 {
   "name": "euno-payout",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha-2",
   "description": "EUNO payout tool based on ElectrumJS, written in VueJS",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "electron-json-storage": "^4.1.7",
     "electron-log": "^3.0.1",
     "element-ui": "^2.12.0",
+    "moment": "^2.24.0",
     "source-map-support": "^0.5.9",
     "underscore": "^1.9.1",
     "vue-router": "^3.0.2"
