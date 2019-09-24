@@ -42,10 +42,8 @@
                 <el-row>
                     <el-col :span="22">
                         <el-form-item label="EUNO payout address">
-                            <el-input placeholder="EUNO payout address" v-model="form.payoutAddress" size="mini"></el-input>
+                            <el-input placeholder="EUNO payout address" v-model="form.payoutAddress" size="mini" :class="{'error': !validEunoAddress}"></el-input>
                         </el-form-item>
-
-                        <span v-if="!validEunoAddress" class="addressInvalidError">Invalid EUNO address</span>
                     </el-col>
                 </el-row>
 
@@ -199,9 +197,10 @@
                 margin-bottom: 0;
             }
 
-            .addressInvalidError{
-                color: #ff0052;
-                font-size: 12px;
+            .error{
+                input{
+                    border: #ff0015 1px solid;
+                }
             }
         }
     }
