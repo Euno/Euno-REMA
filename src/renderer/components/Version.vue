@@ -1,6 +1,6 @@
 <template>
     <div id="version">
-        EUNO• Payout {{version}} - &copy; EUNO 2018 - 2019
+        EUNO• REMA {{version}} - &copy; EUNO 2018 - 2019
     </div>
 </template>
 

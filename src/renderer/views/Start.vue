@@ -3,7 +3,7 @@
         <Toolbar
             @on-minify="minifyWindow()"
             @on-close="closeWindow()"
-            title="EUNO• Payout"
+            title="EUNO• REMA"
             :show-minify="true"
             :show-close="true"
         >
@@ -14,7 +14,7 @@
                 <el-checkbox v-model="localSettings.enablePayout">Enable payouts</el-checkbox>
             </div>
 
-            <el-button class="settings-btn" type="primary" size="mini" @click="fetchUnspents()" :disabled="!localSettings.enablePayout || payoutInProgress" :loading="payoutInProgress">Payout now</el-button>
+            <el-button class="settings-btn" type="primary" size="mini" @click="manualPayout()" :disabled="!localSettings.enablePayout || payoutInProgress" :loading="payoutInProgress">Payout now</el-button>
             <el-button class="settings-btn" type="info" size="mini" @click="openSettings()">Open settings</el-button>
 
             <p class="info" v-if="payoutInProgress">
@@ -81,6 +81,17 @@
             },
             openSettings(){
                 ipcRenderer.send('openSettingsScreen', true);
+            },
+            manualPayout(){
+                this.$confirm('You want to pay out your rewards now?', 'Manual payout', {
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No, cancel',
+                    type: 'warning',
+                    showClose: false
+                }).then(() => {
+                    this.fetchUnspents();
+                }).catch(() => {
+                });
             },
             fetchUnspents(){
                 let self = this;
@@ -264,6 +275,10 @@
                                 }
                                 else
                                 {
+                                    new Notification('No unspents', {
+                                        body: 'No rewards found to pay out'
+                                    });
+
                                     self.payoutInProgress = false;
                                     await self.closeWallet();
                                 }

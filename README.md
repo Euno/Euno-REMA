@@ -1,2 +1,2 @@
-# EUNO Payout application for masternodes
+# EUNO• REMA - Payout tool for masternodes
 

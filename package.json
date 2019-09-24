@@ -1,7 +1,7 @@
 {
-  "name": "euno-payout",
-  "version": "1.0.0-alpha-2",
-  "description": "EUNO payout tool based on ElectrumJS, written in VueJS",
+  "name": "euno-rema",
+  "version": "1.0.0-beta",
+  "description": "EUNO REMA is built with ElectrumJS, written in VueJS",
   "main": "index.js",
   "scripts": {
     "start": "electron-webpack dev",
@@ -32,8 +32,8 @@
     "vue-router": "^3.0.2"
   },
   "build": {
-    "appId": "com.euno.payoutApp",
-    "productName": "EUNO• Payout",
+    "appId": "com.euno.rema",
+    "productName": "EUNO• REMA",
     "copyright": "Copyright © year ${author}"
   }
 }
