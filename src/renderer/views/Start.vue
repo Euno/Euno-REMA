@@ -11,7 +11,7 @@
 
         <div class="windowContent">
             <div>
-                <el-checkbox v-model="localSettings.enablePayout">Enable payouts</el-checkbox>
+                <el-checkbox v-model="localSettings.enablePayout">Enable auto payouts</el-checkbox>
             </div>
 
             <el-button class="settings-btn" type="primary" size="mini" @click="manualPayout()" :disabled="!localSettings.enablePayout || payoutInProgress" :loading="payoutInProgress">Payout now</el-button>
@@ -22,11 +22,13 @@
             </p>
 
             <p class="info">
-                A payout request will be executed every hour. If you want to do a manual payout, please click the "Payout now" button!
+                A payout request for masternode rewards will be executed every hour.<br />
+                Please use the "Payout now" button to execute a manual payout.
             </p>
 
             <p class="info">
-                ETA next payout: {{localSettings.enablePayout === true ? nextPayoutDateHuman : 'Never, because payouts are disabled'}}
+                Estimated time for the next auto payout request: <br />
+                {{localSettings.enablePayout === true ? nextPayoutDateHuman : 'Never, because payouts are disabled'}}
             </p>
 
             <Version></Version>
@@ -83,7 +85,7 @@
                 ipcRenderer.send('openSettingsScreen', true);
             },
             manualPayout(){
-                this.$confirm('You want to pay out your rewards now?', 'Manual payout', {
+                this.$confirm('Do you want to pay out your masternode rewards now?', 'Manual payout', {
                     confirmButtonText: 'Yes',
                     cancelButtonText: 'No, cancel',
                     type: 'warning',
