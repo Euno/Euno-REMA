@@ -1,6 +1,6 @@
 {
   "name": "euno-rema",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta2",
   "description": "EUNO REMA is built with ElectrumJS, written in VueJS",
   "main": "index.js",
   "scripts": {
