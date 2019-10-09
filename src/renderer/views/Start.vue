@@ -172,7 +172,7 @@
                             if(result.error === null)
                             {
                                 let rewards = _.filter(result.result, (unspent)=>{
-                                    return parseInt(parseFloat(unspent.amount).toFixed(0)) === self.calcRewardAmount()
+                                    return parseFloat(unspent.amount).toFixed(2) == self.calcRewardAmount()
                                 });
 
                                 let sortedTxPerAddress = {};
@@ -358,7 +358,7 @@
                     mnReward = 3 * 0.8;
                 }
 
-                return mnReward;
+                return mnReward.toFixed(2);
             },
             minifyWindow(){
                 ipcRenderer.send('minifyMainWindow', true);
