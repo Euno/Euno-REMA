@@ -57,7 +57,8 @@
 
             </el-form>
 
-            <el-button @click="saveSettings()" size="mini" type="primary">Save</el-button>
+            <el-button @click="saveSettings(true)" size="mini" type="primary">Save</el-button>
+            <el-button @click="saveSettings()" size="mini" type="primary">Apply</el-button>
             <el-button @click="testSettings()" size="mini" type="info" :loading="testLoading">Test connection</el-button>
         </div>
 
@@ -126,11 +127,23 @@
             }
         },
         methods: {
-            saveSettings(){
+            saveSettings(closeSettings = false){
+                let self = this;
                 storage.set('eunoPayoutSettings', this.form, function(error) {
                     if (error) throw error;
 
-                    ipcRenderer.send('checkSettingsFilled', true);
+                    if(closeSettings)
+                        ipcRenderer.send('checkSettingsFilled', true);
+
+                    if(!closeSettings)
+                    {
+                        self.$message({
+                            message: 'Settings saved',
+                            type: 'success',
+                            duration: 1000,
+                            showClose: true
+                        });
+                    }
                 });
             },
             async testSettings() {
