@@ -13,7 +13,7 @@
     "electron": "^6.0.8",
     "electron-builder": "^21.2.0",
     "electron-webpack": "^2.7.4",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "vue": "^2.5.21",
     "vue-loader": "^15.5.1",
